@@ -1,0 +1,28 @@
+name: build
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Распаковать проект
+        run: unzip -q rank-levels-project.zip -d work
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+
+      - name: Собрать плагин
+        working-directory: work/rank-levels
+        run: mvn -B package
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RankLevels-jar
+          path: work/rank-levels/target/RankLevels-1.0.0.jar
